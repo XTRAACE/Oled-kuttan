@@ -1,0 +1,73 @@
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <SPI.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+
+// 🔥 SPI Pins (UNO)
+#define OLED_MOSI 11
+#define OLED_CLK  13
+#define OLED_DC   2
+#define OLED_CS   5
+#define OLED_RESET 4
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,
+  OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
+
+// 🔥 Logo (64x64)
+const unsigned char recktronics_logo [] PROGMEM = {
+0x00,0x00,0x00,0x00,0x1E,0x00,0x00,0x00,
+0x3F,0x80,0x00,0x00,0x7F,0xC0,0x00,0x00,
+0x70,0xE0,0x00,0x00,0x70,0x70,0x00,0x00,
+0x70,0x38,0x00,0x00,0x70,0x1C,0x00,0x00,
+0x70,0x0E,0x00,0x00,0x7F,0xFF,0x00,0x00,
+0x7F,0xFF,0x80,0x00,0x70,0x07,0xC0,0x00,
+0x70,0x03,0xE0,0x00,0x70,0x01,0xF0,0x00,
+0x70,0x00,0xF8,0x00,0x70,0x00,0x7C,0x00,
+0x70,0x00,0x3E,0x00,0x70,0x00,0x1F,0x00,
+0x70,0x00,0x0F,0x80,0x70,0x00,0x07,0xC0,
+0x70,0x00,0x03,0xE0,0x00,0x00,0x00,0x00
+};
+
+void setup() {
+  Serial.begin(9600);
+
+  if(!display.begin(SSD1306_SWITCHCAPVCC)) {
+    Serial.println("OLED not found");
+    while(true);
+  }
+
+  display.clearDisplay();
+
+  // 🔥 Slide Animation
+  for(int x = -64; x <= 32; x++) {
+    display.clearDisplay();
+    display.drawBitmap(x, 0, recktronics_logo, 64, 64, WHITE);
+    display.display();
+    delay(15);
+  }
+
+  delay(800);
+
+  // 🔥 Show Text
+  display.clearDisplay();
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(10, 25);
+  display.println("RECKTRONICS");
+  display.display();
+
+  delay(2000);
+
+  // 🔥 Final Screen
+  display.clearDisplay();
+  display.drawBitmap(32, 0, recktronics_logo, 64, 64, WHITE);
+  display.setTextSize(1);
+  display.setCursor(20, 54);
+  display.println("RECKTRONICS");
+  display.display();
+}
+
+void loop() {
+}
